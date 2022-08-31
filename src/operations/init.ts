@@ -29,9 +29,14 @@ const run = async function cli() {
       console.info("COPY", item.src);
       const directory = path.dirname(item.target_full_path);
 
+      if (fs.existsSync(item.target_full_path)) {
+        console.info("ignoring", item.src, "because", "already exists");
+        return;
+      }
       if (!fs.existsSync(directory)) {
         mkdirp.sync(directory);
       }
+
       fs.copyFileSync(item.src_full_path, item.target_full_path);
     });
 
