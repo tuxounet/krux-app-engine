@@ -12,10 +12,13 @@ const run = async function cli() {
   console.info("template", sample_folder);
   console.info("target folder", target_folder);
 
-  const items = await fg(["**/*.ejs", "**/*.ts", "**/*.yaml", "**/*.json", "**/.gitignore", "**/.dockerignore"], {
-    cwd: sample_folder,
-    ignore: [...global_ignone_glob, "**/package-lock.json"],
-  });
+  const items = await fg(
+    ["**/*.ejs", "**/*.ts", "**/*.yaml", "**/*.json", "**/.gitignore", "**/.dockerignore", "**/.jsx", "**/.tsx"],
+    {
+      cwd: sample_folder,
+      ignore: [...global_ignone_glob, "**/package-lock.json"],
+    }
+  );
 
   items
     .map((item) => {
