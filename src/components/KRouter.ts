@@ -8,20 +8,22 @@ import { KResponse } from "./KResponse";
 import { createHttpTerminator, HttpTerminator } from "http-terminator";
 import { KDispatcher } from "./KDispatcher";
 import { KManifest, KRoute } from "../types";
+import { KConfig } from "./KConfig";
 
 export type KRouterHandler = (router: KRouter) => void;
 
 export class KRouter {
   port = 3000;
   base_path = "";
+
   allowed_verbs = ["get", "post"];
   configuring: boolean;
   loader: KRouterLoader;
   terminator?: HttpTerminator;
   dispatcher: KDispatcher;
   manifests: KManifest[];
-  constructor(public readonly routes_folder: string) {
-    this.loader = new KRouterLoader(this, this.routes_folder, this.routeUpdated.bind(this));
+  constructor(public readonly config: KConfig) {
+    this.loader = new KRouterLoader(this, this.config.context_folder, this.routeUpdated.bind(this));
     this.dispatcher = new KDispatcher();
     this.manifests = [];
     this.configuring = true;
@@ -117,7 +119,7 @@ export class KRouter {
 
   async close() {
     Object.keys(require.cache)
-      .filter((item) => item.startsWith(this.loader.routes_directory))
+      .filter((item) => item.startsWith(this.config.context_folder))
       .forEach((item) => {
         delete require.cache[item];
       });

@@ -6,12 +6,15 @@ import chokidar from "chokidar";
 import { KRouter } from "./KRouter";
 import jsYaml from "js-yaml";
 export class KRouterLoader {
-  routes_directory: string;
-
-  constructor(private readonly router: KRouter, routes_path: string, private readonly onRoutesChanged: () => void) {
-    this.routes_directory = path.join(process.cwd(), routes_path);
+  constructor(
+    private readonly router: KRouter,
+    public readonly routes_directory: string,
+    private readonly onRoutesChanged: () => void
+  ) {
     if (!fs.existsSync(this.routes_directory)) throw new Error("routes directory not exists");
-    this.listen();
+    if (!router.config.production) {
+      this.listen();
+    }
   }
 
   async walkHandlers(allowed_verbs: string[]) {
