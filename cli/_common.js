@@ -4,7 +4,7 @@ const childProc = require("child_process");
 module.exports.runOperation = function (look_dir, operation_name, env) {
   const operations_directory = path.join(look_dir, "..", "src", "operations");
   const operation_file = path.join(operations_directory, operation_name) + ".ts";
- 
+
   if (!fs.existsSync(operation_file)) {
     console.error("FATAL", "unknow opereation", operation_name);
     process.exit(1);
@@ -17,7 +17,7 @@ module.exports.runOperation = function (look_dir, operation_name, env) {
     process.exit(1);
   }
 
-  runCommand("ts-node " + operation_file, run_directory, env)
+  runCommand(ts_node_folder + " " + operation_file, run_directory, env)
     .then(() => {
       console.info("DONE");
     })
