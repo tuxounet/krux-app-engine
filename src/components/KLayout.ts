@@ -9,7 +9,7 @@ import rollupTs from "@rollup/plugin-typescript";
 import { getBabelInputPlugin } from "@rollup/plugin-babel";
 import rollupCommonjs from "@rollup/plugin-commonjs";
 import rollupResolve from "@rollup/plugin-node-resolve";
-import rollupTerser from "rollup-plugin-terser";
+
 export class KLayout {
   template_extension = ".ejs";
   private layout_dir: string;
@@ -57,56 +57,76 @@ export class KLayout {
     const header = this._render_header();
 
     const file_path = "/home/krux/repos/krux.lan/home/k-app-engine/sample/welcome/jsx/sub/App.jsx";
-    const output_file = "/home/krux/repos/krux.lan/home/k-app-engine/sample/welcome/jsx/sub/App.build";
-    const flde_directory = path.dirname(file_path);
-    let externalDependencies = ["react", "react-dom", "react-dom/client"];
+    const boot_file_path =
+      "/home/krux/repos/krux.lan/home/k-app-engine/sample/welcome/jsx/sub/boot.k.tmp.to-delete.jsx";
+    const output_file = "/home/krux/repos/krux.lan/home/k-app-engine/sample/welcome/jsx/sub/App.k.tmp.to-delete.build";
+    let body = "NO RESULT";
 
-    const rolllup_build = await rollup.rollup({
-      input: file_path,
-      external: externalDependencies,
-      plugins: [
-        getBabelInputPlugin({
-          presets: ["@babel/preset-env", "@babel/preset-react"],
-          babelHelpers: "bundled",
-        }),
-        rollupResolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }),
-        rollupCommonjs(),
-        rollupTs({
-          include: ["**/*.ts", "**/*.tsx"],
-          compilerOptions: {
-            module: "esnext",
-            target: "es5",
-            lib: ["es6", "dom"],
+    try {
+      const flde_directory = path.dirname(file_path);
+      let externalDependencies = ["react", "react-dom"];
+
+      const boot_script = `import { App } from "./App";
+  import React from "react";
+  import ReactDOM from "react-dom";
+  const container = document.getElementById("root");
+  ReactDOM.render(<App />, container);`;
+      fs.writeFileSync(boot_file_path, boot_script, { encoding: "utf-8" });
+
+      const rolllup_build = await rollup.rollup({
+        input: [boot_file_path],
+        external: externalDependencies,
+        plugins: [
+          getBabelInputPlugin({
+            presets: ["@babel/preset-env", "@babel/preset-react"],
+            babelHelpers: "bundled",
+          }),
+          rollupResolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }),
+          rollupCommonjs(),
+          rollupTs({
+            include: ["**/*.ts", "**/*.tsx"],
             sourceMap: true,
-            jsx: "react",
-            moduleResolution: "node",
-            rootDir: flde_directory,
-            noImplicitReturns: true,
-            noImplicitThis: true,
-            noImplicitAny: true,
-            strictNullChecks: true,
-            esModuleInterop: true,
-            forceConsistentCasingInFileNames: true,
-          },
-        }),
 
-        rollupTerser.terser(),
-      ],
-    });
+            compilerOptions: {
+              module: "esnext",
+              target: "es5",
+              lib: ["es6", "dom"],
+              sourceMap: true,
+              jsx: "react",
+              moduleResolution: "node",
 
-    const output = await rolllup_build.write({
-      file: output_file,
-      format: "iife",
-    });
+              noImplicitReturns: true,
+              noImplicitThis: true,
+              noImplicitAny: true,
+              strictNullChecks: true,
+              esModuleInterop: true,
+              forceConsistentCasingInFileNames: true,
+            },
+          }),
+        ],
+      });
 
-    fs.unlinkSync(output_file);
+      const output = await rolllup_build.write({
+        file: output_file,
+        format: "iife",
+        sourcemap: "inline",
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
+      });
 
-    const body = `<div id="root"></div>
+      body = `<div id="root"></div>
 <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js">
 </script><script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-<script>${output.output[0].code}</script>`;
-
+<script type="module">${output.output[0].code}</script>
+`;
+    } finally {
+      fs.unlinkSync(boot_file_path);
+      fs.unlinkSync(output_file);
+    }
     const footer = this._render_footer();
+
     const html = header + body + footer;
     return html;
   }

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import { Test } from "./Test";
-function App() {
+export function App() {
   const [plop, setPlop] = useState(false);
   return (
     <div className="box">
@@ -13,7 +12,4 @@ function App() {
       </div>
     </div>
   );
-}
-
-const container = document.getElementById("root");
-ReactDOM.render(<App />, container);
+} 
