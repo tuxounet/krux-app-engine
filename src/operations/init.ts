@@ -13,7 +13,7 @@ const run = async function cli() {
   console.info("target folder", target_folder);
 
   const items = await fg(
-    ["**/*.ejs", "**/*.ts", "**/*.yaml", "**/*.json", "**/.gitignore", "**/.dockerignore", "**/.jsx", "**/.tsx"],
+    ["**/*.ejs", "**/*.ts", "**/*.yaml", "**/*.json", "**/.gitignore", "**/.dockerignore", "**/*.jsx", "**/*.tsx"],
     {
       cwd: sample_folder,
       ignore: [...global_ignone_glob, "**/package-lock.json"],
