@@ -22,6 +22,8 @@ export class KRouterLoader {
       dot: false,
       onlyFiles: true,
       cwd: this.routes_directory,
+      followSymbolicLinks: false,
+      ignore: ["node_modules/**", "**/node_modules/**", ".git/**", "**/.git/**"],
     });
 
     const routes: KRoute[] = entries
@@ -77,6 +79,8 @@ export class KRouterLoader {
       dot: false,
       onlyFiles: true,
       cwd: this.routes_directory,
+      followSymbolicLinks: false,
+      ignore: ["node_modules/**", "**/node_modules/**", ".git/**", "**/.git/**"],
     });
 
     const manifests = entries
@@ -113,16 +117,21 @@ export class KRouterLoader {
   listen() {
     this.routes_directory;
     // One-liner for current directory
-    chokidar.watch("**/*", { cwd: this.routes_directory }).on("all", (event, path) => {
-      if (this.router.configuring) return;
-      console.log(event, path);
-      switch (event) {
-        case "add":
-        case "change":
-        case "unlink":
-          if (this.onRoutesChanged) this.onRoutesChanged();
-          break;
-      }
-    });
+    chokidar
+      .watch(["**/*"], {
+        cwd: this.routes_directory,
+        ignored: ["node_modules/**", "**/node_modules/**", ".git/**", "**/.git/**"],
+      })
+      .on("all", (event, path) => {
+        if (this.router.configuring) return;
+        console.log(event, path);
+        switch (event) {
+          case "add":
+          case "change":
+          case "unlink":
+            if (this.onRoutesChanged) this.onRoutesChanged();
+            break;
+        }
+      });
   }
 }

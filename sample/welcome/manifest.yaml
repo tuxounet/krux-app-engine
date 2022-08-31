@@ -5,7 +5,8 @@ body:
   name: Bienvenue
   description: Module de bienvenu qui dit bonjour
   start: /welcome/hello
-  prefix: /welcome/
+  prefix: /welcome/ 
   links:
     - name: Bonjour
       url: /welcome/hello
+ 

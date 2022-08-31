@@ -1,12 +1,18 @@
 {
   "name": "@krux/app-engine",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
-  "main": "./src/index.ts",
+  "main": "./src/operations/serve.ts",
+  "types": "./src/types.ts",
+  "bin": {
+    "kae-serve": "./cli/serve.js",
+    "kae-dev": "./cli/dev.js",
+    "kae-init": "./cli/init.js"
+  },
   "scripts": {
-    "build": "tsc",    
+    "build": "tsc",
     "start": "cd sample && NODE_ENV=production ts-node ../src/index.ts",
-    "dev": "cd sample && NODE_ENV=dev ts-node ../src/index.ts",
+    "dev": "cd sample && NODE_ENV=dev ts-node ../src/operations/serve.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
