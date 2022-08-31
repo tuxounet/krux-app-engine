@@ -1,6 +1,6 @@
 {
   "name": "@krux/app-engine",
-  "version": "22.8.2",
+  "version": "22.8.3",
   "description": "",
   "main": "./src/operations/serve.ts",
   "types": "./src/types.ts",
@@ -47,7 +47,6 @@
     "@types/rimraf": "^3.0.2"
   },
   "devDependencies": {
-
     "typescript": "^4.7.4"
   }
 }
