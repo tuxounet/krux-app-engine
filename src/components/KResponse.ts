@@ -34,6 +34,28 @@ export class KResponse {
     return this;
   }
 
+  async renderReact(data?: object) {
+    const layout = new KLayout(this.request);
+
+    const view_name = this.request.route.verb;
+
+    let result = {
+      navigation: {},
+    };
+    if (data) {
+      result = {
+        ...result,
+        ...data,
+      };
+    }
+
+    const body = await layout.renderReact(result);
+    this.res.statusCode = 200;
+    this.res.send(body);
+
+    return this;
+  }
+
   renderWelcome() {
     const layout = new KLayout(this.request);
 

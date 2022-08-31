@@ -4,17 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "refresh" : "rm -rf node_modules package-lock.json yarn.lock && npm install",    
-    "dev" : "kae-dev", 
-    "reinit" : "kae-init", 
-    "start" : "kae-serve", 
+    "refresh": "rm -rf node_modules package-lock.json yarn.lock && npm install",
+    "dev": "kae-dev",
+    "reinit": "kae-init",
+    "start": "kae-serve",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@krux/app-engine": "git+ssh://krux@git.krux.lan:2222/home/k-app-engine.git",
+    "@krux/app-engine": "../",
     "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.18",
+    "@types/react-dom": "^18.0.6"
   }
 }

@@ -4,6 +4,12 @@ import fs from "fs";
 import ejs from "ejs";
 import moment from "moment";
 import { KRequest } from "./KRequest";
+import * as rollup from "rollup";
+import rollupTs from "@rollup/plugin-typescript";
+import { getBabelInputPlugin } from "@rollup/plugin-babel";
+import rollupCommonjs from "@rollup/plugin-commonjs";
+import rollupResolve from "@rollup/plugin-node-resolve";
+import rollupTerser from "rollup-plugin-terser";
 export class KLayout {
   template_extension = ".ejs";
   private layout_dir: string;
@@ -42,6 +48,64 @@ export class KLayout {
       modules,
       entries: [],
     });
+    const footer = this._render_footer();
+    const html = header + body + footer;
+    return html;
+  }
+
+  async renderReact(data?: object) {
+    const header = this._render_header();
+
+    const file_path = "/home/krux/repos/krux.lan/home/k-app-engine/sample/welcome/jsx/sub/App.jsx";
+    const output_file = "/home/krux/repos/krux.lan/home/k-app-engine/sample/welcome/jsx/sub/App.build";
+    const flde_directory = path.dirname(file_path);
+    let externalDependencies = ["react", "react-dom", "react-dom/client"];
+
+    const rolllup_build = await rollup.rollup({
+      input: file_path,
+      external: externalDependencies,
+      plugins: [
+        getBabelInputPlugin({
+          presets: ["@babel/preset-env", "@babel/preset-react"],
+          babelHelpers: "bundled",
+        }),
+        rollupResolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }),
+        rollupCommonjs(),
+        rollupTs({
+          include: ["**/*.ts", "**/*.tsx"],
+          compilerOptions: {
+            module: "esnext",
+            target: "es5",
+            lib: ["es6", "dom"],
+            sourceMap: true,
+            jsx: "react",
+            moduleResolution: "node",
+            rootDir: flde_directory,
+            noImplicitReturns: true,
+            noImplicitThis: true,
+            noImplicitAny: true,
+            strictNullChecks: true,
+            esModuleInterop: true,
+            forceConsistentCasingInFileNames: true,
+          },
+        }),
+
+        rollupTerser.terser(),
+      ],
+    });
+
+    const output = await rolllup_build.write({
+      file: output_file,
+      format: "iife",
+    });
+
+    fs.unlinkSync(output_file);
+
+    const body = `<div id="root"></div>
+<script crossorigin src="https://unpkg.com/react@17/umd/react.development.js">
+</script><script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+<script>${output.output[0].code}</script>`;
+
     const footer = this._render_footer();
     const html = header + body + footer;
     return html;
