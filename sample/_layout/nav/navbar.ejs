@@ -1,0 +1,18 @@
+<div class="columns is-mobile m-2">
+  <div class="column">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="/"><%= app.name %></a></li>
+        <% if(module) { %>
+        <li>
+          <a href="<%= module.start %>"><%= module.name %></a>
+        </li>
+        <% } %> <% if(action) { %>
+        <li>
+          <a href="#"> <strong> <%= action %></strong></a>
+        </li>
+        <% } %>
+      </ul>
+    </nav>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<section class="hero is-primary">
+  <div class="hero-body">
+   
+    <p class="subtitle"><%= app.description %></p>
+  </div>
+</section>
+<div class="container">
+  <div class="columns is-multiline">
+    <% for(const entry of modules) { %>
+    <div class="column is-one-third">
+      <div class="card m-3">
+        <header class="card-header">
+          <p class="card-header-title"><%= entry.name %></p>
+          <button class="card-header-icon" aria-label="more options">
+            <span class="icon">
+              <i class="fas fa-angle-down" aria-hidden="true"></i>
+            </span>
+          </button>
+        </header>
+        <div class="card-content">
+          <div class="content"><%= entry.description %></div>
+        </div>
+        <footer class="card-footer">
+          <% for(const link of entry.links) { %>
+          <a href="<%= link.url %>" class="card-footer-item"><%= link.name %></a>
+          <% } %>
+        </footer>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</div>
