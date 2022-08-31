@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "refresh" : "rm -rf node_modules package-lock.json yarn.lock && npm install",    
     "dev" : "kae-dev", 
     "start" : "kae-serve", 
     "test": "echo \"Error: no test specified\" && exit 1"
