@@ -1,5 +1,5 @@
 import childProc from "child_process";
-export async function RunCommand(cmd: string, cwd?: string) {
+export async function runCommand(cmd: string, cwd?: string) {
   return new Promise((resolve, reject) => {
     const proc = childProc.exec(
       cmd,
@@ -19,5 +19,13 @@ export async function RunCommand(cmd: string, cwd?: string) {
         });
       }
     );
+    if (proc.stdout)
+      proc.stdout.on("data", (chunk) => {
+        process.stdout.write(chunk);
+      });
+    if (proc.stderr)
+      proc.stderr.on("data", (chunk) => {
+        process.stderr.write(chunk);
+      });
   });
 }

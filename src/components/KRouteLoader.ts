@@ -5,6 +5,7 @@ import { KManifest, KRoute, KRouteHandler } from "../types";
 import chokidar from "chokidar";
 import { KRouter } from "./KRouter";
 import jsYaml from "js-yaml";
+import { global_ignone_glob } from "../constants";
 export class KRouterLoader {
   constructor(
     private readonly router: KRouter,
@@ -23,7 +24,7 @@ export class KRouterLoader {
       onlyFiles: true,
       cwd: this.routes_directory,
       followSymbolicLinks: false,
-      ignore: ["node_modules/**", "**/node_modules/**", ".git/**", "**/.git/**"],
+      ignore: global_ignone_glob,
     });
 
     const routes: KRoute[] = entries
@@ -80,7 +81,7 @@ export class KRouterLoader {
       onlyFiles: true,
       cwd: this.routes_directory,
       followSymbolicLinks: false,
-      ignore: ["node_modules/**", "**/node_modules/**", ".git/**", "**/.git/**"],
+      ignore: global_ignone_glob,
     });
 
     const manifests = entries
@@ -120,7 +121,7 @@ export class KRouterLoader {
     chokidar
       .watch(["**/*"], {
         cwd: this.routes_directory,
-        ignored: ["node_modules/**", "**/node_modules/**", ".git/**", "**/.git/**"],
+        ignored: global_ignone_glob,
       })
       .on("all", (event, path) => {
         if (this.router.configuring) return;
