@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@krux/app-engine": "file:../",
+    "@krux/app-engine": "git+ssh://krux@git.krux.lan:2222/home/k-app-engine.git",
     "ts-node": "^10.9.1"
   }
 }
