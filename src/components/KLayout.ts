@@ -9,7 +9,7 @@ import rollupTs from "@rollup/plugin-typescript";
 import { getBabelInputPlugin } from "@rollup/plugin-babel";
 import rollupCommonjs from "@rollup/plugin-commonjs";
 import rollupResolve from "@rollup/plugin-node-resolve";
-
+import rollupPostcss from "rollup-plugin-postcss";
 export class KLayout {
   template_extension = ".ejs";
   private layout_dir: string;
@@ -112,6 +112,7 @@ export class KLayout {
               forceConsistentCasingInFileNames: true,
             },
           }),
+          rollupPostcss({ plugins: [] }),
         ],
       });
 

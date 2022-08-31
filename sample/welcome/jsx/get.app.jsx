@@ -1,5 +1,5 @@
 import React, { useState } from "react";
- 
+import "./plop.css";
 export default function App(props) {
   const [plop, setPlop] = useState(false);
   return (
@@ -7,7 +7,7 @@ export default function App(props) {
       <div className="content">
         <h1>Hello world ^^ {plop ? <span>hello</span> : <span>world</span>} </h1>
         <p>{props.date}</p>
-       
+
         <button onClick={(e) => setPlop(!plop)}>Plop</button>
       </div>
     </div>
