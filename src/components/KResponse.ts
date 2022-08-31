@@ -37,8 +37,6 @@ export class KResponse {
   async renderReact(data?: object) {
     const layout = new KLayout(this.request);
 
-    const view_name = this.request.route.verb;
-
     let result = {
       navigation: {},
     };

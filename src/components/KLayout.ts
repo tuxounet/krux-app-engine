@@ -55,22 +55,31 @@ export class KLayout {
 
   async renderReact(data?: object) {
     const header = this._render_header();
+    const app_suffix = ".app";
+    const build_extension = ".build";
+    const temp_mark = ".k.tmp.to-delete";
+    const expected_folder = this.request.route.folder;
+    const expected_app_name = this.request.route.verb + app_suffix + ".jsx";
+    const expected_component = path.join(expected_folder, expected_app_name);
 
-    const file_path = "/home/krux/repos/krux.lan/home/k-app-engine/sample/welcome/jsx/sub/App.jsx";
-    const boot_file_path =
-      "/home/krux/repos/krux.lan/home/k-app-engine/sample/welcome/jsx/sub/boot.k.tmp.to-delete.jsx";
-    const output_file = "/home/krux/repos/krux.lan/home/k-app-engine/sample/welcome/jsx/sub/App.k.tmp.to-delete.build";
+    if (!fs.existsSync(expected_component)) {
+      throw new Error("Not found " + expected_component);
+    }
+
+    const boot_file_path = path.join(expected_folder, "boot" + temp_mark + ".jsx");
+    const output_file = path.join(expected_folder, this.request.route.verb + app_suffix + temp_mark + build_extension);
+
     let body = "NO RESULT";
 
     try {
-      const flde_directory = path.dirname(file_path);
       let externalDependencies = ["react", "react-dom"];
 
-      const boot_script = `import { App } from "./App";
+      const boot_script = `import App from "./${this.request.route.verb + app_suffix}";
   import React from "react";
   import ReactDOM from "react-dom";
-  const container = document.getElementById("root");
-  ReactDOM.render(<App />, container);`;
+  const container = document.getElementById("root");  
+  const datas = ${JSON.stringify(data)};
+  ReactDOM.render(<App {...datas} />, container);`;
       fs.writeFileSync(boot_file_path, boot_script, { encoding: "utf-8" });
 
       const rolllup_build = await rollup.rollup({
@@ -122,8 +131,8 @@ export class KLayout {
 <script type="module">${output.output[0].code}</script>
 `;
     } finally {
-      fs.unlinkSync(boot_file_path);
-      fs.unlinkSync(output_file);
+      if (fs.existsSync(boot_file_path)) fs.unlinkSync(boot_file_path);
+      if (fs.existsSync(output_file)) fs.unlinkSync(output_file);
     }
     const footer = this._render_footer();
 
