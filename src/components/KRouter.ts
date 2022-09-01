@@ -17,7 +17,7 @@ export class KRouter {
   base_path = "";
 
   allowed_verbs = ["get", "post"];
-  configuring: boolean;
+
   loader: KRouterLoader;
   terminator?: HttpTerminator;
   dispatcher: KDispatcher;
@@ -27,13 +27,16 @@ export class KRouter {
     this.loader = new KRouterLoader(this, this.config.context_folder, this.routeUpdated.bind(this));
     this.dispatcher = new KDispatcher();
     this.manifests = [];
-    this.configuring = false;
   }
 
   private routeUpdated() {
+    console.info("routes need update");
     this.close()
       .then(() => {
         return this.setup();
+      })
+      .then(() => {
+        this.loader.idle = true;
       })
       .catch((e) => {
         console.error("FATAL", e);
@@ -45,8 +48,6 @@ export class KRouter {
   }
 
   async setup() {
-    if (this.configuring) return;
-    this.configuring = true;
     const app = express();
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
@@ -116,7 +117,6 @@ export class KRouter {
       }
     });
 
-    this.configuring = false;
     return result;
   }
 
