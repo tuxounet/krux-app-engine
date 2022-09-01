@@ -21,3 +21,5 @@ export interface KManifest<TBody = Record<string, string>> {
   body: TBody;
 }
 export { KDispatcher } from "./components/KDispatcher";
+
+export * as constants from "./constants";
