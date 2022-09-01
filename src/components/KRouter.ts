@@ -22,11 +22,12 @@ export class KRouter {
   terminator?: HttpTerminator;
   dispatcher: KDispatcher;
   manifests: KManifest[];
+
   constructor(public readonly config: KConfig) {
     this.loader = new KRouterLoader(this, this.config.context_folder, this.routeUpdated.bind(this));
     this.dispatcher = new KDispatcher();
     this.manifests = [];
-    this.configuring = true;
+    this.configuring = false;
   }
 
   private routeUpdated() {
@@ -44,6 +45,7 @@ export class KRouter {
   }
 
   async setup() {
+    if (this.configuring) return;
     this.configuring = true;
     const app = express();
     app.use(bodyParser.urlencoded({ extended: false }));
