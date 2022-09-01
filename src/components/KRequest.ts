@@ -1,22 +1,37 @@
 import type { Request, Response } from "express";
 import { KRoute } from "../types";
 import { KRouter } from "./KRouter";
-
+import querystring from "querystring";
 export class KRequest {
   constructor(public readonly router: KRouter, private readonly req: Request, public readonly route: KRoute) {
     this.method = this.req.method;
     this.path = this.req.path;
     this.body = this.req.body;
-    this.query = this.req.query;
-  }
 
+    this.headers = {};
+    Object.keys(req.headers).forEach((item) => (this.headers[item] = req.headers[item]));
+
+    this.query = this.req.query as querystring.ParsedUrlQuery;
+    this.user = String(this.headers["x-user"]);
+    this.email = String(this.headers["x-email"]);
+  }
+  headers: Record<string, string | string[] | undefined> = {};
   body?: Record<string, string>;
-  query: Record<string, unknown>;
+  query: querystring.ParsedUrlQuery;
   method: string;
   path: string;
+  user?: string;
+  email?: string;
 
   getQueryParamOrDefault(name: string, default_value: string) {
     if (this.req && this.req.query && this.req.query[name]) return String(this.req.query);
     return default_value;
+  }
+
+  isAuthenticated(): boolean {
+    if (!this.user) return false;
+    if (typeof this.user !== "string") return false;
+    if (this.user.trim() === "") return false;
+    return true;
   }
 }
