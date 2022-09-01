@@ -2,27 +2,13 @@ import path from "path";
 import fs from "fs";
 import fg from "fast-glob";
 import { KManifest, KRoute, KRouteHandler } from "../types";
-import chokidar from "chokidar";
 import { KRouter } from "./KRouter";
 import jsYaml from "js-yaml";
 import { global_ignone_glob } from "../constants";
-import moment from "moment";
-export class KRouterLoader {
-  check_interval?: NodeJS.Timeout;
-  idle = true;
-  last_change = moment("1985-01-30");
-  last_raise = moment();
-  constructor(
-    private readonly router: KRouter,
-    public readonly routes_directory: string,
-    private readonly onRoutesChanged: () => void
-  ) {
-    if (!fs.existsSync(this.routes_directory)) throw new Error("routes directory not exists");
-    if (!router.config.production) {
-      this.listen();
-    }
 
-    //  this.onRoutesChanged()
+export class KRouterLoader {
+  constructor(private readonly router: KRouter, public readonly routes_directory: string) {
+    if (!fs.existsSync(this.routes_directory)) throw new Error("routes directory not exists");
   }
 
   async walkHandlers(allowed_verbs: string[]) {
@@ -120,39 +106,5 @@ export class KRouterLoader {
       });
 
     return manifests;
-  }
-
-  listen() {
-    if (this.check_interval) {
-      clearInterval(this.check_interval);
-    }
-
-    this.check_interval = setInterval(() => {
-      if (this.last_raise.diff(this.last_change, "second") < 2) {
-        if (this.idle) {
-          this.idle = false;
-          console.info("dirty detected");
-          this.onRoutesChanged();
-          this.last_raise = moment().add(2, "second");
-        }
-      }
-    }, 1000);
-
-    // One-liner for current directory
-    chokidar
-      .watch(["**/*"], {
-        cwd: this.routes_directory,
-        ignored: global_ignone_glob,
-      })
-      .on("all", (event, path) => {
-        console.log(event, path);
-        switch (event) {
-          case "add":
-          case "change":
-          case "unlink":
-            this.last_change = moment();
-            break;
-        }
-      });
   }
 }

@@ -10,12 +10,12 @@
     "kae-init": "./cli/init.js"
   },
   "repository": {
-    "url": "ssh://krux@192.168.1.1:2222/home/k-app-engine.git"
+    "url": "https://github.com/tuxounet/krux-app-engine.git"
   },
   "scripts": {
     "build": "tsc",
-    "start": "cd sample && NODE_ENV=production ts-node ../src/operations/serve.ts",
-    "dev": "cd sample && NODE_ENV=dev ts-node ../src/operations/serve.ts",
+    "start": "cd sample && npm run start",
+    "dev": "cd sample && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -41,7 +41,6 @@
     "@types/node": "^18.7.13",
     "@types/rimraf": "^3.0.2",
     "body-parser": "^1.20.0",
-    "chokidar": "^3.5.3",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
     "fast-glob": "^3.2.11",
@@ -61,10 +60,11 @@
     "rollup-plugin-terser": "^7.0.2",
     "simple-git": "^3.13.0",
     "ts-node": "^10.9.1",
-    "tslib": "^2.4.0"
+    "tslib": "^2.4.0",
+    "nodemon": "^2.0.19",
+    "@rollup/plugin-json": "^4.1.0"
   },
   "devDependencies": {
-    "@rollup/plugin-json": "^4.1.0",
     "typescript": "^4.7.4"
   }
 }

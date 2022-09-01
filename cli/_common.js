@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const childProc = require("child_process");
-module.exports.runOperation = function (look_dir, operation_name, env) {
+module.exports.runOperation = function (look_dir, operation_name, env, withWatch) {
   const operations_directory = path.join(look_dir, "..", "src", "operations");
   const operation_file = path.join(operations_directory, operation_name) + ".ts";
 
@@ -16,8 +16,15 @@ module.exports.runOperation = function (look_dir, operation_name, env) {
     console.error("FATAL", "ts-node not found");
     process.exit(1);
   }
+  let launch_command = ts_node_folder + " " + operation_file;
+  if (withWatch) {
+    const nodemon_node_folder = path.join(run_directory, "node_modules", ".bin", "nodemon");
 
-  runCommand(ts_node_folder + " " + operation_file, run_directory, env)
+    launch_command =
+      nodemon_node_folder + " -e js,jsx,yaml,ts,tsx" + " --ignore 'node_modules/**'" + " --ignore '.git/**'" + ' --exec "' + ts_node_folder + '" ' + operation_file;
+  }
+
+  runCommand(launch_command, run_directory, env)
     .then(() => {
       console.info("DONE");
     })

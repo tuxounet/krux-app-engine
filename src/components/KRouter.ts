@@ -17,37 +17,23 @@ export class KRouter {
   base_path = "";
 
   allowed_verbs = ["get", "post"];
-
+  listening: boolean;
   loader: KRouterLoader;
   terminator?: HttpTerminator;
   dispatcher: KDispatcher;
   manifests: KManifest[];
 
   constructor(public readonly config: KConfig) {
-    this.loader = new KRouterLoader(this, this.config.context_folder, this.routeUpdated.bind(this));
+    this.loader = new KRouterLoader(this, this.config.context_folder);
     this.dispatcher = new KDispatcher();
     this.manifests = [];
-  }
-
-  private routeUpdated() {
-    console.info("routes need update");
-    this.close()
-      .then(() => {
-        return this.setup();
-      })
-      .then(() => {
-        this.loader.idle = true;
-      })
-      .catch((e) => {
-        console.error("FATAL", e);
-        process.exit(1);
-      });
-  }
-  async boot() {
-    return true;
+    this.listening = false;
   }
 
   async setup() {
+    if (this.listening) {
+      await this.close();
+    }
     const app = express();
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
@@ -105,7 +91,7 @@ export class KRouter {
       try {
         const server = app.listen(this.port, () => {
           console.info("listening on port", this.port);
-
+          this.listening = true;
           resolve(true);
         });
         this.terminator = createHttpTerminator({
@@ -132,5 +118,6 @@ export class KRouter {
       await this.terminator.terminate();
       this.terminator = undefined;
     }
+    this.listening = false;
   }
 }
