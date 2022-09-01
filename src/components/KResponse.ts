@@ -69,9 +69,13 @@ export class KResponse {
     return this;
   }
 
-  fail(message: string) {
+  fail(message: string, error_datas?: any) {
     this.res.statusCode = 500;
-    this.res.redirect(message);
+    this.res.statusMessage = message;
+
+    const layout = new KLayout(this.request);
+    const body = layout.renderError(message, error_datas);
+    this.res.send(body);
     return this;
   }
 

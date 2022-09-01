@@ -62,6 +62,7 @@ export class KRouter {
         return res.renderWelcome();
       },
     };
+
     routes.push(welcomeRoute);
     for (const route of routes) {
       console.info("register", route.verb, route.path);
@@ -69,28 +70,28 @@ export class KRouter {
         case "get":
           app.get(route.path, (req: Request, res: Response) => {
             if (!route.handler) {
-              res.status(404).send("no code");
+              res.status(404).send("code not found");
               return;
             }
             const request = new KRequest(this, req, route);
             const response = new KResponse(request, res);
             route.handler(request, response).catch((e) => {
               console.error(e);
-              res.status(500).send("an error occured");
+              response.fail("an error occured", e);
             });
           });
           break;
         case "post":
           app.post(route.path, (req: Request, res: Response) => {
             if (!route.handler) {
-              res.status(404).send("no code");
+              res.status(404).send("code not found");
               return;
             }
             const request = new KRequest(this, req, route);
             const response = new KResponse(request, res);
             route.handler(request, response).catch((e) => {
               console.error(e);
-              res.status(500).send("an error occured");
+              response.fail("an error occured", e);
             });
           });
           break;

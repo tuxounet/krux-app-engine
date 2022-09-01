@@ -9,4 +9,6 @@ RUN npm install
 
 COPY ./ /usr/app/
 
+EXPOSE 3000
+VOLUME ["/srv"]
 CMD ["npm", "run", "start"]

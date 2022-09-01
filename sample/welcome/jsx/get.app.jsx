@@ -5,10 +5,10 @@ export default function App(props) {
   return (
     <div className="box">
       <div className="content">
-        <h1>Hello world ^^ {plop ? <span>hello</span> : <span>world</span>} </h1>
+        <h1>Hello world {plop ? <span>':('</span> : <span>':)'</span>} </h1>
         <p>{props.date}</p>
 
-        <button onClick={(e) => setPlop(!plop)}>Plop</button>
+        <button className="button" onClick={(e) => setPlop(!plop)}>UP</button>
       </div>
     </div>
   );

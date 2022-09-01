@@ -53,6 +53,16 @@ export class KLayout {
     return html;
   }
 
+  renderError(message: string, error_data?: any) {
+    const header = this._render_header();
+ 
+    const body = `<div><h1>Une erreur est survenue</h1><h2>${message}</h2><pre>${error_data}</pre></div>`;
+
+    const footer = this._render_footer();
+    const html = header + body + footer;
+    return html;
+  }
+
   async renderReact(data?: object) {
     const header = this._render_header();
     const app_suffix = ".app";
