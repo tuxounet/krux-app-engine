@@ -21,7 +21,7 @@ module.exports.runOperation = function (look_dir, operation_name, env, withWatch
     const nodemon_node_folder = path.join(run_directory, "node_modules", ".bin", "nodemon");
 
     launch_command =
-      nodemon_node_folder + " -e js,jsx,yaml,ts,tsx" + " --ignore 'node_modules/**'" + " --ignore '.git/**'" + ' --exec "' + ts_node_folder + '" ' + operation_file;
+      nodemon_node_folder + " -e js,jsx,yaml,ts,tsx,ejs" + " --ignore 'node_modules/**'" + " --ignore '.git/**'" + ' --exec "' + ts_node_folder + '" ' + operation_file;
   }
 
   runCommand(launch_command, run_directory, env)
