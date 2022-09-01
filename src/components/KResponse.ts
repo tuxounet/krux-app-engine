@@ -12,6 +12,12 @@ export class KResponse {
     return this;
   }
 
+  json(body: object) {
+    this.res.statusCode = 200;
+    this.res.json(body);
+    return this;
+  }
+
   render(data?: object) {
     const layout = new KLayout(this.request);
 
