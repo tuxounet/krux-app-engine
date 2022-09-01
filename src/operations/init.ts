@@ -21,6 +21,7 @@ const run = async function cli() {
       "**/.gitignore",
       "**/.dockerignore",
       "**/Dockerfile",
+      "**/LICENSE",
       "**/*.jsx",
       "**/*.tsx",
     ],

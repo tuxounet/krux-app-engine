@@ -1,10 +1,12 @@
 FROM node:18-alpine
 
-COPY ./package.json /app/package.json
-RUN npm install
+RUN apk add git 
 
-COPY ./ /app/
+WORKDIR /usr/app
+COPY ./package.json /usr/app/package.json
+  
+RUN npm install 
 
-WORKDIR /app
+COPY ./ /usr/app/
 
 CMD ["npm", "run", "start"]

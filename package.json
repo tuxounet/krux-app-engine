@@ -10,7 +10,7 @@
     "kae-init": "./cli/init.js"
   },
   "repository": {
-    "url": "ssh://krux@git.krux.lan:2222/home/k-app-engine.git"
+    "url": "ssh://krux@192.168.1.1:2222/home/k-app-engine.git"
   },
   "scripts": {
     "build": "tsc",
@@ -19,7 +19,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "email": "krux@krux.fr",
+    "name": "Christophe TIRAOUI"
+  },
   "license": "ISC",
   "dependencies": {
     "@babel/plugin-syntax-jsx": "^7.18.6",
