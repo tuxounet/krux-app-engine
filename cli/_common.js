@@ -23,6 +23,7 @@ module.exports.runOperation = function (look_dir, operation_name, env, withWatch
     launch_command =
       nodemon_node_folder +
       " -e js,jsx,yaml,ts,tsx,ejs" +
+      " --ignore '.cache/**'" +
       " --ignore '**/*.k.tmp.to-delete.*'" +
       " --ignore 'node_modules/**'" +
       " --ignore '.git/**'" +

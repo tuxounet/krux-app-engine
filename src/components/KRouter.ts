@@ -9,6 +9,7 @@ import { createHttpTerminator, HttpTerminator } from "http-terminator";
 import { KDispatcher } from "./KDispatcher";
 import { KManifest, KRoute } from "../types";
 import { KConfig } from "./KConfig";
+import { KCodeBuilder } from "./KCodeBuilder";
 
 export type KRouterHandler = (router: KRouter) => void;
 
@@ -22,12 +23,13 @@ export class KRouter {
   terminator?: HttpTerminator;
   dispatcher: KDispatcher;
   manifests: KManifest[];
-
+  codeBuilder: KCodeBuilder;
   constructor(public readonly config: KConfig) {
     this.loader = new KRouterLoader(this, this.config.context_folder);
     this.dispatcher = new KDispatcher();
     this.manifests = [];
     this.listening = false;
+    this.codeBuilder = new KCodeBuilder(this, this.dispatcher);
   }
 
   async setup() {

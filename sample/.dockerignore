@@ -1,3 +1,6 @@
+.cache/
 node_modules/
 .git/
 **/*.k.tmp.to-delete.*
+dist/
+run/

@@ -4,12 +4,7 @@ import fs from "fs";
 import ejs from "ejs";
 import moment from "moment";
 import { KRequest } from "./KRequest";
-import * as rollup from "rollup";
-import rollupTs from "@rollup/plugin-typescript";
-import { getBabelInputPlugin } from "@rollup/plugin-babel";
-import rollupCommonjs from "@rollup/plugin-commonjs";
-import rollupResolve from "@rollup/plugin-node-resolve";
-import rollupPostcss from "rollup-plugin-postcss";
+
 export class KLayout {
   template_extension = ".ejs";
   private layout_dir: string;
@@ -17,7 +12,8 @@ export class KLayout {
   private readonly module_dir: string;
 
   constructor(private readonly request: KRequest) {
-    (this.root_dir = this.request.router.loader.routes_directory), (this.module_dir = this.request.route.folder);
+    this.root_dir = this.request.router.loader.routes_directory;
+    this.module_dir = this.request.route.folder;
 
     this.layout_dir = path.join(this.root_dir, "_layout");
   }
@@ -55,7 +51,7 @@ export class KLayout {
 
   renderError(message: string, error_data?: any) {
     const header = this._render_header();
- 
+
     const body = `<div><h1>Une erreur est survenue</h1><h2>${message}</h2><pre>${error_data}</pre></div>`;
 
     const footer = this._render_footer();
@@ -66,85 +62,18 @@ export class KLayout {
   async renderReact(data?: object) {
     const header = this._render_header();
     const app_suffix = ".app";
-    const build_extension = ".build";
-    const temp_mark = ".k.tmp.to-delete";
-    const expected_folder = this.request.route.folder;
-    const expected_app_name = this.request.route.verb + app_suffix + ".jsx";
-    const expected_component = path.join(expected_folder, expected_app_name);
 
-    if (!fs.existsSync(expected_component)) {
-      throw new Error("Not found " + expected_component);
-    }
+    const app_folder = this.request.route.folder;
+    const app_entry_point = this.request.route.verb + app_suffix + ".jsx";
+    const entry_point_file = path.join(app_folder, app_entry_point);
 
-    const boot_file_path = path.join(expected_folder, "boot" + temp_mark + ".jsx");
-    const output_file = path.join(expected_folder, this.request.route.verb + app_suffix + temp_mark + build_extension);
+    const body = await this.request.router.codeBuilder.buildReact(
+      this.request.route.path,
+      this.request.route.verb,
+      entry_point_file,
+      data
+    );
 
-    let body = "NO RESULT";
-
-    try {
-      let externalDependencies = ["react", "react-dom"];
-
-      const boot_script = `import App from "./${this.request.route.verb + app_suffix}";
-  import React from "react";
-  import ReactDOM from "react-dom";
-  const container = document.getElementById("root");  
-  const datas = ${JSON.stringify(data)};
-  ReactDOM.render(<App {...datas} />, container);`;
-      fs.writeFileSync(boot_file_path, boot_script, { encoding: "utf-8" });
-
-      const rolllup_build = await rollup.rollup({
-        input: [boot_file_path],
-        external: externalDependencies,
-        plugins: [
-          getBabelInputPlugin({
-            presets: ["@babel/preset-env", "@babel/preset-react"],
-            babelHelpers: "bundled",
-          }),
-          rollupResolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }),
-          rollupCommonjs(),
-          rollupTs({
-            include: ["**/*.ts", "**/*.tsx"],
-            sourceMap: true,
-
-            compilerOptions: {
-              module: "esnext",
-              target: "es5",
-              lib: ["es6", "dom"],
-              sourceMap: true,
-              jsx: "react",
-              moduleResolution: "node",
-
-              noImplicitReturns: true,
-              noImplicitThis: true,
-              noImplicitAny: true,
-              strictNullChecks: true,
-              esModuleInterop: true,
-              forceConsistentCasingInFileNames: true,
-            },
-          }),
-          rollupPostcss({ plugins: [] }),
-        ],
-      });
-
-      const output = await rolllup_build.write({
-        file: output_file,
-        format: "iife",
-        sourcemap: "inline",
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-        },
-      });
-
-      body = `<div id="root"></div>
-<script crossorigin src="https://unpkg.com/react@17/umd/react.development.js">
-</script><script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-<script type="module">${output.output[0].code}</script>
-`;
-    } finally {
-      if (fs.existsSync(boot_file_path)) fs.unlinkSync(boot_file_path);
-      if (fs.existsSync(output_file)) fs.unlinkSync(output_file);
-    }
     const footer = this._render_footer();
 
     const html = header + body + footer;
