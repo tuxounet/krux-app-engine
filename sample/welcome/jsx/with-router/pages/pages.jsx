@@ -11,14 +11,21 @@ export function PageA() {
   );
 }
 
-export function PageB() {
-  const location = ReactRouterDOM.useLocation();
+export function PageB(props) {
+  const history = ReactRouterDOM.useHistory();
 
   return (
     <div>
       <h1>B {location.pathname}</h1>
       <ReactRouterDOM.Link to="/a">Go A</ReactRouterDOM.Link>
       <ReactRouterDOM.Link to="/">Go index</ReactRouterDOM.Link>
+      <button
+        onClick={() => {
+          history.push("/a");
+        }}
+      >
+        Code nav
+      </button>
     </div>
   );
 }
