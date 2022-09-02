@@ -57,7 +57,7 @@ export class KCodeBuilder {
     let body = "NO RESULT";
 
     try {
-      let externalDependencies = ["react", "react-dom"];
+      let externalDependencies = ["react", "react-dom", "react-router-dom"];
 
       const boot_script = `import App from "./${entry_point_filename_without_ext}";
   import React from "react";
@@ -114,6 +114,8 @@ export class KCodeBuilder {
       body = `<div id="root"></div>
 <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js">
 </script><script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+<script src='https://unpkg.com/react-router-dom@5.0.0/umd/react-router-dom.min.js'></script>
+<script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
 <script type="module">${output.output[0].code}</script>
 `;
     } finally {
