@@ -1,6 +1,6 @@
 {
   "name": "@krux/app-engine",
-  "version": "22.9.0",
+  "version": "22.9.1",
   "description": "",
   "main": "./src/operations/serve.ts",
   "types": "./src/types.ts",
