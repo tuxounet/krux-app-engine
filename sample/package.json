@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@krux/app-engine": "../",
+    "@krux/app-engine": "git+https://github.com/tuxounet/krux-app-engine.git",
     "nodemon": "^2.0.19",
     "ts-node": "^10.9.1"
   },
