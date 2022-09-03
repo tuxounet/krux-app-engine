@@ -12,8 +12,16 @@ export class KRequest {
     Object.keys(req.headers).forEach((item) => (this.headers[item] = req.headers[item]));
 
     this.query = this.req.query as querystring.ParsedUrlQuery;
-    this.user = String(this.headers["x-user"]);
-    this.email = String(this.headers["x-email"]);
+    this.user = this.headers["x-user"]
+      ? String(this.headers["x-user"])
+      : this.router.config.production
+      ? undefined
+      : "anonymous";
+    this.email = this.headers["x-email"]
+      ? String(this.headers["x-email"])
+      : this.router.config.production
+      ? undefined
+      : "anonymous@nowhere.nowhere";
   }
   headers: Record<string, string | string[] | undefined> = {};
   body?: Record<string, string>;
