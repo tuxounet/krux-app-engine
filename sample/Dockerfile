@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-RUN apk add git 
+RUN apk update && apk add git openssh-client
 
 WORKDIR /usr/app
 COPY ./package.json ./package-lock.json  /usr/app/
