@@ -3,4 +3,4 @@ const { runOperation } = require("./_common");
 
 console.info("serve an app in developpement mode");
 
-runOperation(__dirname, "serve", { NODE_ENV: "production" }, true);
+runOperation(__dirname, "serve", { NODE_ENV: "dev" }, true);
