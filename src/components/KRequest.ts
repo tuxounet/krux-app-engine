@@ -42,4 +42,28 @@ export class KRequest {
     if (this.user.trim() === "") return false;
     return true;
   }
+
+  extractQuery(fields: string[]): Record<string, string> | undefined {
+    if (!this.body) return undefined;
+    if (!fields) return undefined;
+    let result: Record<string, string> = {};
+    for (const field of fields) {
+      const value = this.query[field];
+      if (!value) return undefined;
+      result[field] = String(value);
+    }
+    return result;
+  }
+
+  extractBody(fields: string[]): Record<string, string> | undefined {
+    if (!this.body) return undefined;
+    if (!fields) return undefined;
+    let result: Record<string, string> = {};
+    for (const field of fields) {
+      const value = this.body[field];
+      if (!value) return undefined;
+      result[field] = value;
+    }
+    return result;
+  }
 }
