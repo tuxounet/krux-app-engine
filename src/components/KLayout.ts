@@ -93,7 +93,13 @@ export class KLayout {
     }
 
     const header_view_path = path.join(this.layout_dir, "header.ejs");
-    return this.render_file(header_view_path, { app, modules, module: current_module, action: current_action });
+    return this.render_file(header_view_path, {
+      path: this.request.route.path,
+      app,
+      modules,
+      module: current_module,
+      action: current_action,
+    });
   }
 
   private _render_body(view_name: string, data?: object) {
