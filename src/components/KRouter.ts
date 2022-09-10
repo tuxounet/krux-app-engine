@@ -14,7 +14,6 @@ import { KCodeBuilder } from "./KCodeBuilder";
 export type KRouterHandler = (router: KRouter) => void;
 
 export class KRouter {
-  port = 3000;
   base_path = "";
 
   allowed_verbs = ["get", "post"];
@@ -91,8 +90,8 @@ export class KRouter {
 
     const result = await new Promise((resolve, reject) => {
       try {
-        const server = app.listen(this.port, () => {
-          console.info("listening on port", this.port);
+        const server = app.listen(this.config.port, () => {
+          console.info("listening on port", this.config.port);
           this.listening = true;
           resolve(true);
         });
