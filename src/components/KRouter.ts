@@ -96,7 +96,7 @@ export class KRouter {
           address = "127.0.0.1";
         }
         const server = app.listen(this.config.port, address, () => {
-          console.info("listening on port", this.config.port);
+          console.info("listening on port", this.config.port, "at", address);
           this.listening = true;
           resolve(true);
         });
