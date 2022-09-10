@@ -23,6 +23,7 @@ export class KRouter {
   dispatcher: KDispatcher;
   manifests: KManifest[];
   codeBuilder: KCodeBuilder;
+
   constructor(public readonly config: KConfig) {
     this.loader = new KRouterLoader(this, this.config.context_folder);
     this.dispatcher = new KDispatcher();
@@ -98,7 +99,12 @@ export class KRouter {
         const server = app.listen(this.config.port, address, () => {
           console.info("listening on port", this.config.port, "at", address);
           this.listening = true;
-          resolve(true);
+
+          this.boot_hook()
+            .then(() => resolve(true))
+            .catch((e) => {
+              console.error(e), resolve(false);
+            });
         });
         this.terminator = createHttpTerminator({
           server,
@@ -110,6 +116,22 @@ export class KRouter {
     });
 
     return result;
+  }
+  private async boot_hook() {
+    const boot_hooks = await this.loader.walkHooks(["boot"]);
+
+    if (boot_hooks) {
+      console.info("running boot hooks", boot_hooks)
+      await Promise.all(
+        boot_hooks
+          .map((item) => {
+            if (item.handler) return item.handler(this.dispatcher);
+            return undefined;
+          })
+          .filter((item) => item !== undefined)
+      );
+    }
+    return true 
   }
 
   async close() {

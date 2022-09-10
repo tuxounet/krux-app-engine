@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import fg from "fast-glob";
-import { KManifest, KRoute, KRouteHandler } from "../types";
+import { KHook, KHookHandler, KManifest, KRoute, KRouteHandler } from "../types";
 import { KRouter } from "./KRouter";
 import jsYaml from "js-yaml";
 import { global_ignone_glob } from "../constants";
@@ -9,6 +9,45 @@ import { global_ignone_glob } from "../constants";
 export class KRouterLoader {
   constructor(private readonly router: KRouter, public readonly routes_directory: string) {
     if (!fs.existsSync(this.routes_directory)) throw new Error("routes directory not exists");
+  }
+
+  async walkHooks(allowed_hooks: string[]) {
+    const entries = await fg(["**/*.hook.ts"], {
+      dot: false,
+      onlyFiles: true,
+      cwd: this.routes_directory,
+      followSymbolicLinks: false,
+      ignore: global_ignone_glob,
+    });
+
+    const hooks: KHook[] = entries
+      .map((item) => {
+        const file_path = path.join(this.routes_directory, item);
+        const file_name = path.basename(file_path);
+        const trigger = file_name.replace(".hook.ts", "").trim();
+
+        return {
+          path: file_path,
+          folder: path.dirname(path.join(this.routes_directory, item)),
+          name: file_name,
+          trigger: trigger,
+        };
+      })
+      .filter((item) => allowed_hooks.includes(item.trigger))
+      .map((item) => {
+        let result: KHook = { trigger: item.trigger };
+        try {
+          const handler = require(item.path);
+          const handler_method = handler.default as KHookHandler;
+          result.handler = handler_method;
+        } catch (e: any) {
+          console.error("REQUIRE FAILURE", e.code, e);
+        }
+        return result;
+      })
+      .filter((item) => item.handler !== undefined);
+
+    return hooks;
   }
 
   async walkHandlers(allowed_verbs: string[]) {
