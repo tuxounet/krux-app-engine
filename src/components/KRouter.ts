@@ -90,7 +90,12 @@ export class KRouter {
 
     const result = await new Promise((resolve, reject) => {
       try {
-        const server = app.listen(this.config.port, () => {
+        let address = "0.0.0.0";
+
+        if (this.config.production) {
+          address = "127.0.0.1";
+        }
+        const server = app.listen(this.config.port, address, () => {
           console.info("listening on port", this.config.port);
           this.listening = true;
           resolve(true);
