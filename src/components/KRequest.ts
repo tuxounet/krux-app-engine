@@ -58,7 +58,7 @@ export class KRequest {
     return result;
   }
 
-  extractBody(fields: string[]): Record<string, unknown> | undefined {
+  extractBody(fields: string[]): Record<string, any> | undefined {
     if (!this.body) return undefined;
     if (!fields) return undefined;
     let result: Record<string, string> = {};
