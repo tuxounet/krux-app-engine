@@ -10,6 +10,7 @@ import { KDispatcher } from "./KDispatcher";
 import { KManifest, KRoute } from "../types";
 import { KConfig } from "./KConfig";
 import { KCodeBuilder } from "./KCodeBuilder";
+import expressFileUpload from "express-fileupload";
 
 export type KRouterHandler = (router: KRouter) => void;
 
@@ -37,6 +38,14 @@ export class KRouter {
       await this.close();
     }
     const app = express();
+    app.use(
+      expressFileUpload({
+        createParentPath: true,
+        limits: {
+          fileSize: 5 * 1024 * 1024 * 1024, //2MB max file(s) size
+        },
+      })
+    );
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
     app.use(morgan("tiny"));
@@ -121,7 +130,7 @@ export class KRouter {
     const boot_hooks = await this.loader.walkHooks(["boot"]);
 
     if (boot_hooks) {
-      console.info("running boot hooks", boot_hooks)
+      console.info("running boot hooks", boot_hooks);
       await Promise.all(
         boot_hooks
           .map((item) => {
@@ -131,7 +140,7 @@ export class KRouter {
           .filter((item) => item !== undefined)
       );
     }
-    return true 
+    return true;
   }
 
   async close() {

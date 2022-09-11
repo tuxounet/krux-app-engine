@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import type { FileArray } from "express-fileupload";
 import { KRoute } from "../types";
 import { KRouter } from "./KRouter";
 import querystring from "querystring";
@@ -22,6 +23,7 @@ export class KRequest {
       : this.router.config.production
       ? undefined
       : "anonymous@nowhere.nowhere";
+    if (req.files) this.files = req.files;
   }
   headers: Record<string, string | string[] | undefined> = {};
   body?: Record<string, string>;
@@ -30,6 +32,7 @@ export class KRequest {
   path: string;
   user?: string;
   email?: string;
+  files?: FileArray;
 
   getQueryParamOrDefault(name: string, default_value: string) {
     if (this.req && this.req.query && this.req.query[name]) return String(this.req.query);
