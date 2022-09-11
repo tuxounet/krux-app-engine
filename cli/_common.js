@@ -16,6 +16,9 @@ module.exports.runOperation = function (look_dir, operation_name, env, withWatch
     console.error("FATAL", "ts-node not found");
     process.exit(1);
   }
+
+  const datas_path = process.env.KAE_DATAS_PATH ? process.env.KAE_DATAS_PATH : path.join(process.cwd(), "run");
+
   let launch_command = ts_node_folder + " " + operation_file;
   if (withWatch) {
     const nodemon_node_folder = path.join(run_directory, "node_modules", ".bin", "nodemon");
@@ -27,13 +30,16 @@ module.exports.runOperation = function (look_dir, operation_name, env, withWatch
       " --ignore '**/*.k.tmp.to-delete.*'" +
       " --ignore 'node_modules/**'" +
       " --ignore '.git/**'" +
+      " --ignore '" +
+      datas_path +
+      "/**'" +
       ' --exec "' +
       ts_node_folder +
       '" ' +
       operation_file;
   }
 
-  runCommand(launch_command, run_directory, env)
+  runCommand(launch_command, run_directory, { ...env, KAE_DATAS_PATH: datas_path })
     .then(() => {
       console.info("DONE");
     })
