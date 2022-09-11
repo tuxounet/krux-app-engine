@@ -11,7 +11,12 @@ export class KResponse {
     else this.res.send(body);
     return this;
   }
-
+  status(code: number, description?: string) {
+    this.res.statusCode = code;
+    if (description) this.res.statusMessage = description;
+    this.res.send();
+    return this;
+  }
   json(body: object) {
     this.res.statusCode = 200;
     this.res.json(body);
@@ -81,7 +86,7 @@ export class KResponse {
     }
 
     this.res.statusCode = 200;
-    this.res.contentType(".js")
+    this.res.contentType(".js");
     this.res.send(sw);
 
     return this;
