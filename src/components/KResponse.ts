@@ -81,6 +81,7 @@ export class KResponse {
     }
 
     this.res.statusCode = 200;
+    this.res.contentType(".js")
     this.res.send(sw);
 
     return this;
