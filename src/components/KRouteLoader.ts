@@ -9,8 +9,11 @@ import { global_ignone_glob } from "../constants";
 export class KRouterLoader {
   constructor(private readonly router: KRouter, public readonly routes_directory: string) {
     if (!fs.existsSync(this.routes_directory)) throw new Error("routes directory not exists");
+    this.static_directory = path.join(routes_directory, "_static");
+    
   }
 
+  static_directory: string;
   async walkHooks(allowed_hooks: string[]) {
     const entries = await fg(["**/*.hook.ts"], {
       dot: false,
@@ -75,7 +78,7 @@ export class KRouterLoader {
           verb: path.basename(item).replace(path.extname(item), "").toLowerCase(),
         };
       })
-      .filter((item) => !["_layout"].includes(path.basename(item.folder)))
+      .filter((item) => !["_layout", "_static"].includes(path.basename(item.folder)))
 
       .map((item) => {
         const result: KRoute = {

@@ -50,6 +50,8 @@ export class KRouter {
     app.use(bodyParser.json());
     app.use(morgan("tiny"));
 
+    app.use("/_static", express.static(this.loader.static_directory));
+
     const routes = await this.loader.walkHandlers(this.allowed_verbs);
     this.manifests = await this.loader.walkManifests();
 
