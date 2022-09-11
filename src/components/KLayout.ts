@@ -49,6 +49,18 @@ export class KLayout {
     return html;
   }
 
+  renderServiceWorker() {
+    const service_worker_file = "sw.js";
+    const service_worker_path = path.join(this.layout_dir, service_worker_file);
+    if (!fs.existsSync(service_worker_path)) {
+      return undefined;
+    }
+
+    const sw_body = fs.readFileSync(service_worker_path, { encoding: "utf-8" });
+    const sw_result = `var cache_version="${this.request.router.cache_version}";\n` + sw_body;
+    return sw_result;
+  }
+
   renderError(message: string, error_data?: any) {
     const header = this._render_header();
 

@@ -11,12 +11,13 @@ import { KManifest, KRoute } from "../types";
 import { KConfig } from "./KConfig";
 import { KCodeBuilder } from "./KCodeBuilder";
 import expressFileUpload from "express-fileupload";
+import moment from "moment";
 
 export type KRouterHandler = (router: KRouter) => void;
 
 export class KRouter {
   base_path = "";
-
+  cache_version = "v0";
   allowed_verbs = ["get", "post"];
   listening: boolean;
   loader: KRouterLoader;
@@ -37,6 +38,7 @@ export class KRouter {
     if (this.listening) {
       await this.close();
     }
+    this.cache_version = String(moment().unix());
     const app = express();
     app.use(
       expressFileUpload({
@@ -65,7 +67,18 @@ export class KRouter {
       },
     };
 
+    const swRoute: KRoute = {
+      verb: "get",
+      path: "/sw.js",
+      folder: "",
+      file: "",
+      handler: async (req, res) => {
+        return res.renderServiceWorker();
+      },
+    };
+
     routes.push(welcomeRoute);
+    routes.push(swRoute);
     for (const route of routes) {
       console.info("register", route.verb, route.path);
       switch (route.verb) {
@@ -157,6 +170,7 @@ export class KRouter {
       await this.terminator.terminate();
       this.terminator = undefined;
     }
+    this.cache_version = "v0";
     this.listening = false;
   }
 }

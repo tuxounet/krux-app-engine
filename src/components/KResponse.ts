@@ -70,6 +70,22 @@ export class KResponse {
     return this;
   }
 
+  renderServiceWorker() {
+    const layout = new KLayout(this.request);
+
+    const sw = layout.renderServiceWorker();
+    if (sw === undefined) {
+      this.res.statusCode = 404;
+      this.res.send("NOT FOUND");
+      return this;
+    }
+
+    this.res.statusCode = 200;
+    this.res.send(sw);
+
+    return this;
+  }
+
   redirect(target: string) {
     this.res.redirect(target);
     return this;
