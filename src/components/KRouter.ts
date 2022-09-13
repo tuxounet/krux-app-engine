@@ -169,12 +169,14 @@ export class KRouter {
 
     ws_server.on("connection", (socket, request) => {
       const connection_id = "socket_" + ++last_seq;
+      this.connections[connection_id] = socket;
+      console.info(connection_id, "ws open");
+      
       const socket_error_close = (error_code: number, error_message: string, e?: any) => {
         console.error(connection_id, "ws query error", error_code, error_message, e);
         socket.close(1011, JSON.stringify({ type: "error", error_code, error_message }));
         return false;
       };
-      console.info(connection_id, "ws open");
       socket.on("close", () => {
         delete this.connections[connection_id];
         console.info(connection_id, "ws closed");

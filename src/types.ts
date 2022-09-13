@@ -27,6 +27,15 @@ export interface KSocketRoute {
 
 export type KSocketHandler = (req: KSocketRequest, res: KSocketResponse) => Promise<KSocketResponse>;
 
+export interface KSocketCommandResult {
+  kind: string;
+  command: KSocketCommand;
+  is_error: boolean;
+  error_code?: number;
+  error_description?: string;
+  result: unknown;
+}
+
 export type KHookHandler = (dispatcher: KDispatcher) => Promise<boolean>;
 export interface KHook {
   trigger: string;

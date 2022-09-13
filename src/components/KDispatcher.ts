@@ -10,9 +10,13 @@ export class KDispatcher {
   private notify(eventName: string, source: string, params?: Record<string, string>) {
     try {
       console.info(eventName, source, params);
+      console.dir(this.router.connections)
       Object.keys(this.router.connections).forEach((connectionId) => {
+        console.info("notify", connectionId, eventName, source)
+        
         const socket = this.router.connections[connectionId];
         if (socket)
+        {
           socket.send(
             JSON.stringify({
               kind: "event",
@@ -20,7 +24,7 @@ export class KDispatcher {
               source,
               params,
             })
-          );
+          );}
       });
     } catch (e) {
       console.error("dispatcher", "notify", "failure", e);
