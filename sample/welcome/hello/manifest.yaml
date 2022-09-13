@@ -1,7 +1,0 @@
-metadata:
-  id: "kae.welcome.hello"
-  kind: "action"
-body:
-  name: Bonjour !
-
- 

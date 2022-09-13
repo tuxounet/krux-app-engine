@@ -1,0 +1,12 @@
+metadata:
+  id: "kae.welcome"
+  kind: "module"
+body:
+  name: Demonstration
+  description: Module de démonstration des capacité applicative
+  start: /kitchen
+  prefix: /kitchen/ 
+  links:
+    - name: Demo
+      url: /kitchen
+ 
