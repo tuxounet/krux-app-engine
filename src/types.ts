@@ -1,7 +1,7 @@
 import { KDispatcher } from "./components/KDispatcher";
-import { KRequest } from "./components/KRequest";
+import { KRequest } from "./components/structures/KRequest";
 import { KResponse } from "./components/structures/KResponse";
-import { KSocketRequest } from "./components/KSocketRequest";
+import { KSocketRequest } from "./components/structures/KSocketRequest";
 import { KSocketResponse } from "./components/structures/KSocketResponse";
 
 export interface KRoute {

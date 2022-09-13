@@ -1,0 +1,44 @@
+<script>
+  const host = window.location.host;
+  const protocol = window.location.protocol === "http:" ? "ws" : "wss";
+  const socket = new WebSocket(`${protocol}://${host}/ws`);
+  const socket_callbacks = {};
+  socket.onopen = (event) => {
+    console.info("opened");
+  };
+
+  socket.onmessage = (event) => {
+    console.info("message", event.data);
+    const result = JSON.parse(event.data);
+    const callback = socket_callbacks[result.command.command];
+    if (callback) {
+      delete socket_callbacks[result.command.command];
+      callback(result);
+      return;
+    }
+  };
+
+  socket.onerror = (event) => {
+    console.info("error", event);
+    
+  };
+
+  socket.onclose = (event) => {
+    console.info("close", event);
+    
+  };
+
+  
+  function sendSocketCommand(cmd, args, callback) {
+    const msg = {
+      command: cmd,
+      args,
+    };
+    // Send the msg object as a JSON-formatted string.
+    socket.send(JSON.stringify(msg));
+    if (callback) {
+      socket_callbacks[cmd] = callback;
+      console.info("registered callback for", cmd);
+    }
+  }
+</script>
