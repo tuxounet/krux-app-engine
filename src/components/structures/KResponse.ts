@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { KLayout } from "./KLayout";
+import { KLayout } from "../KLayout";
 import { KRequest } from "./KRequest";
 
 export class KResponse {

@@ -1,0 +1,39 @@
+<h1>WEB SOCKET SAMPLE</h1>
+<script>
+  const host = window.location.host;
+  const protocol = window.location.protocol === "http:" ? "ws" : "wss";
+  const socket = new WebSocket(`${protocol}://${host}/ws`);
+
+  socket.onopen = (event) => {
+    console.info("opened");
+    //exampleSocket.send("Here's some text that the server is urgently awaiting!");
+  };
+
+  socket.onmessage = (event) => {
+    
+    console.info("message", event.data);
+    //exampleSocket.send("Here's some text that the server is urgently awaiting!");
+  };
+
+
+  socket.onerror = (event) => {
+    console.info("error", event);
+    //exampleSocket.send("Here's some text that the server is urgently awaiting!");
+  };
+
+  socket.onclose = (event) => {
+    console.info("close", event);
+    //exampleSocket.send("Here's some text that the server is urgently awaiting!");
+  };
+
+  // Send text to all users through the server
+  function sendText() {
+    // Construct a msg object containing the data the server needs to process the message from the chat client.
+    const msg = {
+      date: Date.now(),
+    };
+
+    // Send the msg object as a JSON-formatted string.
+    socket.send(JSON.stringify(msg));
+  }
+</script>
