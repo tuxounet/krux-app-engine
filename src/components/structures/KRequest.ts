@@ -1,7 +1,7 @@
-import type { Request, Response } from "express";
+import type { Request } from "express";
 import type { FileArray } from "express-fileupload";
-import { KRoute } from "../types";
-import { KRouter } from "./KRouter";
+import { KRoute } from "../../types";
+import { KRouter } from "../KRouter";
 import querystring from "querystring";
 export class KRequest {
   constructor(public readonly router: KRouter, private readonly req: Request, public readonly route: KRoute) {

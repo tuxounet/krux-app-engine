@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 import ejs from "ejs";
 import moment from "moment";
-import { KRequest } from "./KRequest";
+import { KRequest } from "./structures/KRequest";
 
 export class KLayout {
   template_extension = ".ejs";
