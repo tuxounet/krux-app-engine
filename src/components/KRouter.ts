@@ -28,19 +28,21 @@ export class KRouter {
   dispatcher: KDispatcher;
   manifests: KManifest[];
   codeBuilder: KCodeBuilder;
-
+  connections: Record<string, WebSocket.WebSocket>;
   constructor(public readonly config: KConfig) {
     this.loader = new KRouterLoader(this, this.config.context_folder);
-    this.dispatcher = new KDispatcher();
+    this.dispatcher = new KDispatcher(this);
     this.manifests = [];
     this.listening = false;
     this.codeBuilder = new KCodeBuilder(this, this.dispatcher);
+    this.connections = {};
   }
 
   async setup() {
     if (this.listening) {
       await this.close();
     }
+
     this.cache_version = String(moment().unix());
     const app = express();
     app.use(
@@ -61,7 +63,7 @@ export class KRouter {
     await this._bind_rest_routes(app);
 
     const ws_server = new WebSocket.Server({ noServer: true });
-
+    this.connections = {};
     await this._bind_socket_routes(ws_server);
 
     const result = await new Promise((resolve, reject) => {
@@ -160,18 +162,28 @@ export class KRouter {
 
   private async _bind_socket_routes(ws_server: WebSocket.Server) {
     const socket_handlers = await this.loader.walSocketHandlers(this.sockets_allowed_methods);
-    console.dir(socket_handlers);
-
+    let last_seq = 0;
     socket_handlers.forEach((item) => {
       console.info("register", "socket", item.command);
     });
 
     ws_server.on("connection", (socket, request) => {
+      const connection_id = "socket_" + ++last_seq;
       const socket_error_close = (error_code: number, error_message: string, e?: any) => {
-        console.error("ws query error", error_code, error_message, e);
+        console.error(connection_id, "ws query error", error_code, error_message, e);
         socket.close(1011, JSON.stringify({ type: "error", error_code, error_message }));
         return false;
       };
+      console.info(connection_id, "ws open");
+      socket.on("close", () => {
+        delete this.connections[connection_id];
+        console.info(connection_id, "ws closed");
+      });
+
+      socket.on("error", (err) => {
+        console.error(connection_id, "ws error", err);
+        socket.close();
+      });
 
       socket.on("message", (message, isBinary) => {
         try {
@@ -188,7 +200,7 @@ export class KRouter {
           handler
             .handler(socket_request, socket_response)
             .then(() => {
-              console.info("ws command", socket_request.email, cmd, "completed");
+              console.info(connection_id, "ws command", socket_request.email, cmd, "completed");
             })
             .catch((e) => {
               return socket_error_close(500, "unexpected error", e);
@@ -222,6 +234,13 @@ export class KRouter {
   }
 
   async close() {
+    Object.keys(this.connections)
+      .filter((item) => this.connections[item] !== undefined)
+      .forEach((item) => {
+        const socket = this.connections[item];
+        socket.close(1011, JSON.stringify({ type: "error", error_code: 0, error_message: "server closing" }));
+      });
+
     Object.keys(require.cache)
       .filter((item) => item.startsWith(this.config.context_folder))
       .forEach((item) => {
