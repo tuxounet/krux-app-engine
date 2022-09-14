@@ -15,6 +15,7 @@ export interface KRoute {
 export type KRouteHandler = (req: KRequest, res: KResponse) => Promise<KResponse>;
 
 export interface KSocketCommand {
+  kind: string
   command: string;
   args?: Record<string, unknown>;
 }
