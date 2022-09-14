@@ -128,20 +128,25 @@ export class KLayout {
   }
 
   private render_file(view_file_path: string, data?: object) {
-    if (!fs.existsSync(view_file_path)) throw new Error("view file not exists at" + view_file_path);
-    moment.locale("fr");
-    const template = fs.readFileSync(view_file_path, { encoding: "utf-8" });
+    try {
+      if (!fs.existsSync(view_file_path)) throw new Error("view file not exists at" + view_file_path);
+      moment.locale("fr");
+      const template = fs.readFileSync(view_file_path, { encoding: "utf-8" });
 
-    const data_obj = {
-      ...data,
-      root_path: this.root_dir,
-      moment,
-    };
+      const data_obj = {
+        ...data,
+        root_path: this.root_dir,
+        moment,
+      };
 
-    const value = ejs.render(template, data_obj, {
-      filename: view_file_path,
-    });
+      const value = ejs.render(template, data_obj, {
+        filename: view_file_path,
+      });
 
-    return value;
+      return value;
+    } catch (e) {
+      console.error(e);
+      return "<p>Echec du rendu du fichier " + view_file_path + "</p><pre>" + String(e) + "</pre>";
+    }
   }
 }
