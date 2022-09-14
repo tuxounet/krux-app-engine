@@ -11,9 +11,9 @@
     console.info("message", event.data);
     const result = JSON.parse(event.data);
     if (result.kind === "command") {
-      const callback = socket_callbacks[result.command.command];
+      const callback = socket_callbacks[result.body.command];
       if (callback) {
-        delete socket_callbacks[result.command.command];
+        delete socket_callbacks[result.body.command];
         callback(result);
         return;
       }
