@@ -7,7 +7,7 @@ import { KRequest } from "./structures/KRequest";
 import { KResponse } from "./structures/KResponse";
 import { createHttpTerminator, HttpTerminator } from "http-terminator";
 import { KDispatcher } from "./KDispatcher";
-import { KManifest, KRoute, KSocketCommand } from "../types";
+import { KManifest, KRoute, KSocketPacket } from "../types";
 import { KConfig } from "./KConfig";
 import { KCodeBuilder } from "./KCodeBuilder";
 import expressFileUpload from "express-fileupload";
@@ -212,9 +212,11 @@ export class KRouter {
         }
       });
 
-      const announce: KSocketCommand = {
+      const announce: KSocketPacket = {
         kind: "command",
-        command: "/_system/announce",
+        body: {
+          command: "/_system/announce",
+        },
       };
       socket.send(JSON.stringify(announce));
     });
