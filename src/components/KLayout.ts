@@ -97,7 +97,9 @@ export class KLayout {
     const app = manifests.find((item) => item.metadata.kind === "app")?.body;
     const modules = manifests.filter((item) => item.metadata.kind === "module").map((item) => item.body);
 
-    const current_module = modules.find((item) => this.request.path.startsWith(item.prefix));
+    const current_module = modules
+      .sort((a, b) => b.prefix.length - a.prefix.length)
+      .find((item) => this.request.path.startsWith(item.prefix));
     let current_action = path.basename(this.request.route.path);
     const manifest_action = manifests.find((item) => item.folder === this.request.route.folder);
     if (manifest_action) {

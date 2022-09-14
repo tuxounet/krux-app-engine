@@ -1,0 +1,13 @@
+metadata:
+  id: "kme.home"
+  kind: "module"
+body:
+  icon: 🏠
+  name: 
+  description: Acceuil
+  start: /
+  prefix: /
+  header: 0
+  links:
+    - name: Home
+      url: /

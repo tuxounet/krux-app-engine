@@ -1,18 +1,50 @@
-<div class="columns is-mobile m-2">
-  <div class="column">
-    <nav class="breadcrumb" aria-label="breadcrumbs">
-      <ul>
-        <li><a href="/"><%= app.name %></a></li>
-        <% if(module) { %>
-        <li>
-          <a href="<%= module.start %>"><%= module.name %></a>
-        </li>
-        <% } %> <% if(action) { %>
-        <li>
-          <a href="#"> <strong> <%= action %></strong></a>
-        </li>
-        <% } %>
-      </ul>
-    </nav>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand" data-target="navbarBasicExample">
+    <a class="navbar-item" href="/"> <%= app.name %> </a>
+    <a
+      role="button"
+      class="navbar-burger"
+      id="navbarBurgerExample"
+      aria-label="menu"
+      aria-expanded="false"
+      data-target="navbarBasicExample"
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
   </div>
-</div>
+
+  <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-start">
+      <% for(const declared_module of modules .filter((item) => item.header !== undefined) .sort((a, b) => a.header -
+      b.header)) { %>
+      <a
+        class="navbar-item <%= declared_module.prefix === module.prefix ? 'has-background-primary has-text-link-light' : '' %>"
+        href="<%= declared_module.start %>"
+        ><span><%= declared_module.icon %></span>&nbsp;
+        <span> <%= declared_module.prefix === module.prefix && action ? action : declared_module.name %> </span>
+      </a>
+      <% } %>
+    </div>
+  </div>
+</nav>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll(".navbar-brand"), 0);
+
+    // Add a click event on each of them
+    $navbarBurgers.forEach((el) => {
+      el.addEventListener("click", () => {
+        // Get the target from the "data-target" attribute
+        const target = el.dataset.target;
+        const $target = document.getElementById(target);
+        const ell = document.getElementById("navbarBurgerExample");
+        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+        ell.classList.toggle("is-active");
+        $target.classList.toggle("is-active");
+      });
+    });
+  });
+</script>
