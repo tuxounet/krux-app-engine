@@ -10,7 +10,6 @@ export class KRouterLoader {
   constructor(private readonly router: KRouter, public readonly routes_directory: string) {
     if (!fs.existsSync(this.routes_directory)) throw new Error("routes directory not exists");
     this.static_directory = path.join(routes_directory, "_static");
-    
   }
 
   static_directory: string;
@@ -72,8 +71,6 @@ export class KRouterLoader {
     return routes;
   }
 
-
-
   async walSocketHandlers(allowed_verbs: string[]) {
     const entries = await fg(["**/socket.ts"], {
       dot: false,
@@ -102,9 +99,8 @@ export class KRouterLoader {
       .filter((item) => !["_layout", "_static"].includes(path.basename(item.folder)))
       .filter((item) => allowed_verbs.includes(item.verb))
       .map((item) => {
-        
-        const result: KSocketRoute = {       
-          command : item.segments.length === 0 ? "/" : "/" + item.segments.join("/"),
+        const result: KSocketRoute = {
+          command: item.segments.length === 0 ? "/" : "/" + item.segments.join("/"),
           folder: item.folder,
           file: item.path,
         };
@@ -129,9 +125,8 @@ export class KRouterLoader {
     return routes;
   }
 
-
   async walkManifests() {
-    const entries = await fg(["**/manifest.yaml"], {
+    const entries = await fg(["**/manifest.yaml", "**/*.manifest.yaml"], {
       dot: false,
       onlyFiles: true,
       cwd: this.routes_directory,
@@ -208,5 +203,4 @@ export class KRouterLoader {
 
     return hooks;
   }
-
 }
