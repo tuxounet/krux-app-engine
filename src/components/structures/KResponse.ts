@@ -45,6 +45,14 @@ export class KResponse {
     return this;
   }
 
+  renderRaw(html_body: string) {
+    const layout = new KLayout(this.request);
+    const body = layout.renderRaw(html_body);
+    this.res.statusCode = 200;
+    this.res.send(body);
+    return this;
+  }
+
   async renderReact(data?: object) {
     const layout = new KLayout(this.request);
 

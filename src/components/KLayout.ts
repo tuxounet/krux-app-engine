@@ -27,6 +27,15 @@ export class KLayout {
     return html;
   }
 
+  renderRaw(html_body: string) {
+    const header = this._render_header();
+
+    const footer = this._render_footer();
+
+    const html = header + html_body + footer;
+    return html;
+  }
+
   renderWelcome() {
     const welcome_view_path = path.join(this.layout_dir, "welcome.ejs");
 
