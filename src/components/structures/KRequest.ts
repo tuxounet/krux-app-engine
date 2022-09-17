@@ -35,7 +35,7 @@ export class KRequest {
   files?: FileArray;
 
   getQueryParamOrDefault(name: string, default_value: string) {
-    if (this.req && this.req.query && this.req.query[name]) return String(this.req.query);
+    if (this.req && this.req.query && this.req.query[name]) return String(this.req.query[name]);
     return default_value;
   }
 
