@@ -9,6 +9,8 @@ export class KDispatcher {
 
   private notify(eventName: string, source: string, params?: Record<string, unknown>) {
     try {
+      console.info("dispatcher", "notify", eventName, source);
+
       Object.keys(this.router.connections)
         .filter((item) => this.router.connections[item] !== undefined)
         .forEach((connectionId) => {
