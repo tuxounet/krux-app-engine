@@ -103,13 +103,13 @@ export class KRouter {
   private async _bind_rest_routes(app: express.Application) {
     const rest_routes = await this.loader.walkRestHandlers(this.allowed_verbs);
 
-    const welcomeRoute: KRoute = {
+    const menuRoute: KRoute = {
       verb: "get",
       path: "/",
       folder: "",
       file: "",
       handler: async (req, res) => {
-        return res.renderWelcome();
+        return res.renderMenu();
       },
     };
 
@@ -123,7 +123,7 @@ export class KRouter {
       },
     };
 
-    rest_routes.push(welcomeRoute);
+    rest_routes.push(menuRoute);
     rest_routes.push(swRoute);
     for (const route of rest_routes) {
       console.info("register", route.verb, route.path);

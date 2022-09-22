@@ -73,10 +73,10 @@ export class KResponse {
     return this;
   }
 
-  renderWelcome() {
+  renderMenu() {
     const layout = new KLayout(this.request);
 
-    const body = layout.renderWelcome();
+    const body = layout.renderMenu();
     this.res.statusCode = 200;
     this.res.send(body);
 

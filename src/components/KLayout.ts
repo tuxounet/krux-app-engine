@@ -36,8 +36,8 @@ export class KLayout {
     return html;
   }
 
-  renderWelcome() {
-    const welcome_view_path = path.join(this.layout_dir, "welcome.ejs");
+  renderMenu() {
+    const welcome_view_path = path.join(this.layout_dir, "menu.ejs");
 
     const manifests = this.request.router.manifests;
     const app = manifests.find((item) => item.metadata.kind === "app")?.body;
