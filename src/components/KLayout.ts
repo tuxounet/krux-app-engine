@@ -66,7 +66,24 @@ export class KLayout {
     }
 
     const sw_body = fs.readFileSync(service_worker_path, { encoding: "utf-8" });
-    const sw_result = `var cache_version="${this.request.router.cache_version}";\n` + sw_body;
+    let sw_result = `var cache_version="${this.request.router.cache_version}";\n`;
+
+    const static_files = fs
+      .readdirSync(path.join(this.request.router.loader.static_directory))
+      .map((item) => {
+        const file_path = path.join(this.request.router.loader.static_directory, item);
+        return {
+          name: item,
+          relative: "/_static/" + item,
+          path: file_path,
+          stat: fs.statSync(file_path),
+        };
+      })
+      .filter((item) => item.stat.isDirectory() === false)
+      .map((item) => item.relative);
+    sw_result += "var cache_files = " + JSON.stringify(static_files) + ";\n";
+
+    sw_result += sw_body;
     return sw_result;
   }
 
